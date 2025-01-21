@@ -47,7 +47,7 @@
     public string Mensaje { get; set; } = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-        Tecnico = await tecnicoService.Buscar(TecnicoID);
+        Tecnico = await TecnicoServices.Buscar(TecnicoID);
     }
 
     public async Task Eliminar()
