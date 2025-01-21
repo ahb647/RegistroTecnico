@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using RegistroTecnico.Models.RegistroTecnicos.Models;
+using RegistroTecnico.Models;
 
 
 namespace RegistroTecnico.Context
