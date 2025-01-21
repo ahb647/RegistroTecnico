@@ -1,0 +1,84 @@
+﻿@page "/Tecnico/EditarTecnico/{TecnicoId:int}"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+@using Blazored.Toast.Services
+@inject ToastService toastService
+
+<PageTitle>Editar Técnico</PageTitle>
+
+<EditForm Model="Tecnico" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Técnico</h5>
+            </div>
+
+            <div class="card-body">
+                @* TecnicoID *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Técnico ID</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Tecnico.TecnicoID" readonly />
+                </div>
+
+                @* Nombre *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="Tecnico.Nombre" />
+                    <ValidationMessage For="() => Tecnico.Nombre" />
+                </div>
+
+                @* Sueldo por Hora *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Sueldo por Hora</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Tecnico.SueldoHora" />
+                    <ValidationMessage For="() => Tecnico.SueldoHora" />
+                </div>
+            </div>
+
+            @* Footer *@
+            <div class="card-footer text-center mt-2">
+                <a href="/Tecnico/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TecnicoID { get; set; }
+
+    public Tecnicos Tecnico { get; set; } = new Tecnicos();
+
+    public string Nombre { get; set; } = string.Empty!;
+
+    public int SueldoHora { get; set; }
+
+
+    public List<Tecnicos> ListaTecnicos{ get; set; } = new List<Tecnicos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tecnico = await TecnicoServices.Buscar(TecnicoID);
+    }
+
+    public async Task Modificar()
+    {
+        var paso = await TecnicoServices.Guardar(Tecnico);
+
+        if (paso)
+        {
+            toastService.ShowSuccess("Técnico modificado correctamente");
+            navigationManager.NavigateTo("/Tecnico/Index");
+        }
+        else
+        {
+            toastService.ShowError("No se ha podido modificar el técnico");
+        }
+    }
+}
