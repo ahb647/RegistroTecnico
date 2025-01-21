@@ -1,15 +1,12 @@
-﻿using System;
-using RegistroTecnico.Models;
-using System.Threading.Tasks;
-using RegistroTecnico.Context;
-using System.Diagnostics.Eventing.Reader;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using RegistroTecnico.Models;
 using System.Linq.Expressions;
 
 namespace RegistroTecnico.Services
 {
-    public class TecnicoServices(IDbContextFactory<TecnicoContext> DbFactory)
+    public class TecnicoServices
     {
+        private readonly IDbContextFactory<TecnicoContext> DbFactory;
+
 
         private async Task<bool> Existe(int tecnidoID)
         {

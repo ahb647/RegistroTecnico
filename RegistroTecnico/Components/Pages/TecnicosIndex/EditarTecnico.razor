@@ -1,4 +1,4 @@
-﻿@page "/Tecnico/EditarTecnico/{TecnicoId:int}"
+﻿@page "/TecnicoIndex/Tecnicos"
 @using RegistroTecnico.Models
 @using RegistroTecnico.Services
 @inject TecnicoServices tecnicoService
@@ -9,34 +9,34 @@
 <PageTitle>Editar Técnico</PageTitle>
 
 <EditForm Model="Tecnico" OnValidSubmit="Modificar">
-    <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
-                <h5 class="card-title">Editar Técnico</h5>
+                <h5 class="card-title">Editar</h5>
             </div>
 
             <div class="card-body">
                 @* TecnicoID *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Técnico ID</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Tecnico.TecnicoID" readonly />
+                    <InputNumber class="form-control" @bind-Value="TecnicoID" readonly />
                 </div>
 
                 @* Nombre *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Nombre</strong></label>
-                    <InputText class="form-control" @bind-Value="Tecnico.Nombre" />
-                    <ValidationMessage For="() => Tecnico.Nombre" />
+                    <InputText class="form-control" @bind-Value="Nombre" />
+                    <ValidationMessage For="() =>Nombre" />
                 </div>
 
+                <DataAnnotationsValidator />
                 @* Sueldo por Hora *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Sueldo por Hora</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Tecnico.SueldoHora" />
-                    <ValidationMessage For="() => Tecnico.SueldoHora" />
+                    <InputNumber class="form-control" @bind-Value="SueldoHora" />
+                    <ValidationMessage For="() =>SueldoHora" />
                 </div>
             </div>
 
@@ -52,29 +52,28 @@
 @code {
     [Parameter]
     public int TecnicoID { get; set; }
-
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
-
     public string Nombre { get; set; } = string.Empty!;
-
     public int SueldoHora { get; set; }
 
 
     public List<Tecnicos> ListaTecnicos{ get; set; } = new List<Tecnicos>();
 
+    @*Buscar el técnico*@
     protected override async Task OnInitializedAsync()
     {
         Tecnico = await TecnicoServices.Buscar(TecnicoID);
     }
 
+
     public async Task Modificar()
-    {
+    {   //aqui tambien dice que hay un fallo 
         var paso = await TecnicoServices.Guardar(Tecnico);
 
         if (paso)
         {
             toastService.ShowSuccess("Técnico modificado correctamente");
-            navigationManager.NavigateTo("/Tecnico/Index");
+            navigationManager.NavigateTo("/TecnicoIndex/Tecnicos");
         }
         else
         {

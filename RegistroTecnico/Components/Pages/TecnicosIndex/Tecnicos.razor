@@ -1,4 +1,4 @@
-﻿@page "/Tecnicos"
+﻿@page "/TecnicoIndex/Tecnicos"
 @using RegistroTecnico.Models
 @using RegistroTecnico.Services 
 @inject TecnicoServices tecnicoService
@@ -97,4 +97,6 @@
         SueldoHoraDesde = null;
         SueldoHoraHasta = null;
     }
+
+    private void Volver() => navigationManager.NavigateTo("/TecnicoIndex/Tecnicos");
 }
