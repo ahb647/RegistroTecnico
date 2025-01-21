@@ -15,28 +15,28 @@
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
-                <h5 class="card-title">Editar Técnico</h5>
+                <h5 class="card-title">Editar</h5>
             </div>
 
             <div class="card-body">
                 @* TecnicoID *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Técnico ID</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Tecnico.TecnicoID" readonly />
+                    <InputNumber class="form-control" @bind-Value="TecnicoID" readonly />
                 </div>
 
                 @* Nombre *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Nombre</strong></label>
-                    <InputText class="form-control" @bind-Value="Tecnico.Nombre" />
-                    <ValidationMessage For="() => Tecnico.Nombre" />
+                    <InputText class="form-control" @bind-Value="Nombre" />
+                    <ValidationMessage For="() =>Nombre" />
                 </div>
 
                 @* Sueldo por Hora *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Sueldo por Hora</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Tecnico.SueldoHora" />
-                    <ValidationMessage For="() => Tecnico.SueldoHora" />
+                    <InputNumber class="form-control" @bind-Value="SueldoHora" />
+                    <ValidationMessage For="() =>SueldoHora" />
                 </div>
             </div>
 
