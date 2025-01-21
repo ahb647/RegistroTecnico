@@ -1,0 +1,65 @@
+﻿@page "/Tecnico/Delete/{TecnicoID:int}"
+@page "/TecnicoIndex/EliminarTecnico"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+@using Blazored.Toast.Services
+@inject ToastService toastService
+
+<PageTitle>Eliminar Técnico</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        @*header*@ 
+        <div class="card-header text-center">
+            <h5><strong>Datos del Técnico</strong></h5>
+        </div>
+        @*body*@ 
+        <div class="card-body">
+            <div class="text-center">
+                <h5><strong>¿Desea eliminar este técnico?</strong></h5>
+            </div>
+            <ul class="mt-4">
+                <li><strong>Técnico ID: </strong>@TecnicoID</li>
+                <li><strong>Nombre: </strong>@Nombre</li>
+                <li><strong>Sueldo por Hora: </strong>@SueldoHora.ToString("N2")</li>
+            </ul>
+        </div>
+        @*Footer*@ 
+        <div class="card-footer text-center">
+            <a href="/Tecnico/Index" class="btn btn-primary"> <span class="bi bi-arrow-left"></span> Volver</a>
+            <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
+        </div>
+    </div>
+</div>
+@Mensaje
+
+@code {
+    [Parameter]
+    public int TecnicoID { get; set; }
+    public string Nombre { get; set; } = string.Empty!; // para que nombre no sea nulo
+    public int SueldoHora { get; set; }
+
+    public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tecnico = await tecnicoService.Buscar(TecnicoID);
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await tecnicoService.Eliminar(Tecnico.TecnicoID);
+
+        if (eliminado)
+        {
+            toastService.ShowSuccess("Técnico eliminado correctamente");
+            navigationManager.NavigateTo("/Tecnico/Index");
+        }
+        else
+        {
+            toastService.ShowError("No se ha podido eliminar el técnico");
+        }
+    }
+}
