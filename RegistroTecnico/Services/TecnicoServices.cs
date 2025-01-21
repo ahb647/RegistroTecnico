@@ -8,9 +8,9 @@ using System.Linq.Expressions;
 
 namespace RegistroTecnico.Services
 {
-    public class TecnicoServices(IDbContextFactory<TecnicoContext> DbFactory)
+    public class TecnicoServices
     {
-
+        private readonly IDbContextFactory<TecnicoContext> DbFactory;
         private async Task<bool> Existe(int tecnidoID)
         {
 
