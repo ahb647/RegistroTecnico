@@ -52,20 +52,15 @@
 @code {
     [Parameter]
     public int TecnicoID { get; set; }
-
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
-
     public string Nombre { get; set; } = string.Empty!;
-
     public int SueldoHora { get; set; }
 
 
     public List<Tecnicos> ListaTecnicos{ get; set; } = new List<Tecnicos>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        Tecnico = await TecnicoServices.Buscar(TecnicoID);
-    }
+    protected override async Task OnInitializedAsync() => Tecnico = await TecnicoServices.Buscar(TecnicoID);
+
 
     public async Task Modificar()
     {
