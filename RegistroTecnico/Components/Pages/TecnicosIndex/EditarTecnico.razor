@@ -59,7 +59,11 @@
 
     public List<Tecnicos> ListaTecnicos{ get; set; } = new List<Tecnicos>();
 
-    protected override async Task OnInitializedAsync() => Tecnico = await TecnicoServices.Buscar(TecnicoID);
+    @*Buscar el técnico*@
+    protected override async Task OnInitializedAsync()
+    {
+        Tecnico = await TecnicoServices.Buscar(TecnicoID);
+    }
 
 
     public async Task Modificar()
