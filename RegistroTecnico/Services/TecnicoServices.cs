@@ -11,6 +11,11 @@ namespace RegistroTecnico.Services
     public class TecnicoServices
     {
         private readonly IDbContextFactory<TecnicoContext> DbFactory;
+
+        public TecnicoServices(IDbContextFactory<TecnicoContext> dbFactory)
+        {
+            DbFactory = dbFactory;
+        }
         private async Task<bool> Existe(int tecnidoID)
         {
 
