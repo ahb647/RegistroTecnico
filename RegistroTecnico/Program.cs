@@ -1,34 +1,42 @@
 global using Microsoft.EntityFrameworkCore;
+using Blazored.Toast;
 using RegistroTecnico.Components;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
 using RegistroTecnico.Context;
+using RegistroTecnico.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Registrar Razor Pages y controladores
+builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
+
+// Registrar Razor Components interactivos
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-var app = builder.Build();
-
-
-builder.Services.AddDbContext<TecnicoContext>(options =>
+// Configurar el contexto de base de datos
+builder.Services.AddDbContextFactory<TecnicoContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConStr"));
 });
 
+// Registrar servicios personalizados
+builder.Services.AddScoped<TecnicoServices>();
+builder.Services.AddBlazoredToast();
 
-// Configure the HTTP request pipeline.
+
+var app = builder.Build();
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAntiforgery();
 
