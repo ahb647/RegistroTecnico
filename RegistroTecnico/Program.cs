@@ -1,6 +1,6 @@
+global using Microsoft.EntityFrameworkCore;
 using RegistroTecnico.Components;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RegistroTecnico.Context;
 
