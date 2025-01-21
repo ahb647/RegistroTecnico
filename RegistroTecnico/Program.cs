@@ -1,4 +1,8 @@
 using RegistroTecnico.Components;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using RegistroTecnico.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +11,13 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
+
+
+builder.Services.AddDbContext<TecnicoContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConStr"));
+});
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
