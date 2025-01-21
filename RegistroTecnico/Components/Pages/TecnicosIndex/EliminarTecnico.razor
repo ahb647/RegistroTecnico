@@ -1,5 +1,7 @@
 ﻿@page "/Tecnico/Delete/{TecnicoID:int}"
 @page "/TecnicoIndex/EliminarTecnico"
+@using TecnicosModel = RegistroTecnico.Models.Tecnicos;
+@using TecnicosPage = RegistroTecnico.Components.Pages.TecnicosIndex.Tecnicos;
 @using RegistroTecnico.Models
 @using RegistroTecnico.Services
 @inject TecnicoServices tecnicoService
@@ -40,9 +42,9 @@
     public string Nombre { get; set; } = string.Empty!; // para que nombre no sea nulo
     public int SueldoHora { get; set; }
 
+
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
     public string Mensaje { get; set; } = string.Empty;
-
     protected override async Task OnInitializedAsync()
     {
         Tecnico = await tecnicoService.Buscar(TecnicoID);
@@ -50,7 +52,7 @@
 
     public async Task Eliminar()
     {
-        var eliminado = await tecnicoService.Eliminar(Tecnico.TecnicoID);
+        var eliminado = await tecnicoService.Eliminar(TecnicoID);
 
         if (eliminado)
         {
