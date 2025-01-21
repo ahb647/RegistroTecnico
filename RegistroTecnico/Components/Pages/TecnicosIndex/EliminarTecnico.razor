@@ -51,7 +51,7 @@
     }
 
     public async Task Eliminar()
-    {
+    {    //No puede reconocer el metodo buscar por algun motivo a pesar que yo coloque Services para que pueda 
         var eliminado = await tecnicoService.Eliminar(TecnicoID);
 
         if (eliminado)
