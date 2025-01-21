@@ -1,10 +1,12 @@
 global using Microsoft.EntityFrameworkCore;
+global using RegistroTecnico.Services;
+global using RegistroTecnico.Context;
 using Blazored.Toast;
 using RegistroTecnico.Components;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
-using RegistroTecnico.Context;
-using RegistroTecnico.Services;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
