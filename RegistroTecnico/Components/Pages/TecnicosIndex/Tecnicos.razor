@@ -1,0 +1,100 @@
+﻿@page "/Tecnicos"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services 
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+
+<PageTitle>Registro de Técnicos</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header space-between">
+            <h5 class="card-title">Registro de Técnicos</h5>
+            <a href="/Tecnico/Create" class="btn btn-primary">
+                <span class="bi bi-plus-square mt-3"></span> Crear
+            </a>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table table-striped text-black">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Sueldo por Hora</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ListaTecnicos.Any())
+                    {
+                        @foreach (var tecnico in ListaTecnicos)
+                        {
+                            <tr>
+                                <td>@tecnico.TecnicoID</td>
+                                <td>@tecnico.Nombre</td>
+                                <td>@tecnico.SueldoHora</td>
+                                <td class="text-center">
+                                    <a href="/Tecnico/Edit/@tecnico.TecnicoID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="/Tecnico/Delete/@tecnico.TecnicoID" class="btn btn-outline-danger bi bi-trash"></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No hay técnicos registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <label>Total Técnicos: @ListaTecnicos.Count()</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    
+    public List<RegistroTecnico.Models.Tecnicos> ListaTecnicos { get; set; } = new List<RegistroTecnico.Models.Tecnicos>();
+    // Filtros para la búsqueda
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+    public int? SueldoHoraDesde { get; set; }
+    public int? SueldoHoraHasta { get; set; }
+
+    // Inicialización de la lista de técnicos
+    protected override async Task OnInitializedAsync()
+    {
+        // Inicializar la lista de técnicos con el filtro por defecto
+        ListaTecnicos = await tecnicoService.Listar(t => t.TecnicoID > 0);
+    }
+
+    // Método para buscar técnicos según los filtros
+    private async Task Buscar()
+    {
+        if (Filtro == "Sueldo")
+        {
+            // Filtrar por rango de sueldo
+            ListaTecnicos = await tecnicoService.Listar(t => t.SueldoHora >= SueldoHoraDesde && t.SueldoHora <= SueldoHoraHasta);
+        }
+        else if (ValorFiltro.Trim() != "" && Filtro == "Nombre")
+        {
+            // Filtrar por nombre de técnico
+            ListaTecnicos = await tecnicoService.Listar(t => t.Nombre.ToLower().Contains(ValorFiltro.ToLower()));
+        }
+    }
+
+    // Método para restablecer los filtros y mostrar todos los técnicos
+    private async Task Restablecer()
+    {
+        // Restablecer la lista de técnicos sin filtros
+        ListaTecnicos = await tecnicoService.Listar(t => t.TecnicoID > 0);
+        Filtro = string.Empty;
+        ValorFiltro = string.Empty;
+        SueldoHoraDesde = null;
+        SueldoHoraHasta = null;
+    }
+}
