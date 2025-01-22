@@ -69,7 +69,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Inicializar la lista de técnicos con el filtro por defecto
-        ListaTecnicos = await tecnicoService.Listar(t => t.TecnicoID > 0);
+        ListaTecnicos = await tecnicoService.Listar(t => true);
     }
 
     // Método para buscar técnicos según los filtros
