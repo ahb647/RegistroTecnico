@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35521.163 d17.12
+VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroTecnico", "RegistroTecnico\RegistroTecnico.csproj", "{8895CCB5-AF6A-4393-9D1A-2861B72B406C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroTecnico", "RegistroTecnico\RegistroTecnico.csproj", "{C375A562-C25C-4285-B3D4-F97EC42D9B8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8895CCB5-AF6A-4393-9D1A-2861B72B406C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8895CCB5-AF6A-4393-9D1A-2861B72B406C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8895CCB5-AF6A-4393-9D1A-2861B72B406C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8895CCB5-AF6A-4393-9D1A-2861B72B406C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C375A562-C25C-4285-B3D4-F97EC42D9B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C375A562-C25C-4285-B3D4-F97EC42D9B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C375A562-C25C-4285-B3D4-F97EC42D9B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C375A562-C25C-4285-B3D4-F97EC42D9B8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
