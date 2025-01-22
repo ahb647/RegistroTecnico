@@ -1,4 +1,4 @@
-﻿@page "/TecnicoIndex/CrearTecnico"
+﻿@page "/TecnicosIndex/CrearTecnico"
 @inject TecnicoServices tecnicoService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -34,7 +34,7 @@
 
             @* Footer *@
             <div class="card-footer text-center mt-2">
-                <a href="/Tecnico/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <a href="/TecnicosIndex/Tecnicos" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
                 <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
             </div>
         </div>
@@ -59,7 +59,7 @@
             Nuevo();
         }
 
-        navigationManager.NavigateTo("/TecnicoIndex/Tecnicos");
+        navigationManager.NavigateTo("/TecnicosIndex/Tecnicos");
     }
 
 }
