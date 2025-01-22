@@ -30,7 +30,7 @@
         @*Footer*@ 
         <div class="card-footer text-center">
             <a href="/Tecnico/Index" class="btn btn-primary"> <span class="bi bi-arrow-left"></span> Volver</a>
-            <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
+            <button type="button" class="btn btn-danger bi bi-trash" @* @onclick="Eliminar" *@> Eliminar</button>
         </div>
     </div>
 </div>
@@ -45,23 +45,23 @@
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
     public string Mensaje { get; set; } = string.Empty;
-    protected override async Task OnInitializedAsync()
-    {
-        Tecnico = await TecnicoServices.Buscar(TecnicoID);
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Tecnico = await TecnicoServices.Buscar(TecnicoID);
+    // }
 
-    public async Task Eliminar()
-    {    //No puede reconocer el metodo buscar por algun motivo a pesar que yo coloque Services para que pueda 
-        var eliminado = await tecnicoService.Eliminar(TecnicoID);
+    // public async Task Eliminar()
+    // {    //No puede reconocer el metodo buscar por algun motivo a pesar que yo coloque Services para que pueda 
+    //     var eliminado = await tecnicoService.Eliminar(TecnicoID);
 
-        if (eliminado)
-        {
-            toastService.ShowSuccess("Técnico eliminado correctamente");
-            navigationManager.NavigateTo("/Tecnico/Index");
-        }
-        else
-        {
-            toastService.ShowError("No se ha podido eliminar el técnico");
-        }
-    }
+    //     if (eliminado)
+    //     {
+    //         toastService.ShowSuccess("Técnico eliminado correctamente");
+    //         navigationManager.NavigateTo("/Tecnico/Index");
+    //     }
+    //     else
+    //     {
+    //         toastService.ShowError("No se ha podido eliminar el técnico");
+    //     }
+    // }
 }
