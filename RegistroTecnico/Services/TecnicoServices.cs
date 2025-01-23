@@ -62,7 +62,6 @@ namespace RegistroTecnico.Services
             return await _contexto.SaveChangesAsync() > 0;
         }
 
-
         public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
         {
             return await _contexto.Tecnicos
