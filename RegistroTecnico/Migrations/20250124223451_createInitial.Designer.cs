@@ -12,8 +12,8 @@ using RegistroTecnico.Context;
 namespace RegistroTecnico.Migrations
 {
     [DbContext(typeof(TecnicoContext))]
-    [Migration("20250123212316_CreateInitial")]
-    partial class CreateInitial
+    [Migration("20250124223451_createInitial")]
+    partial class createInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,8 +68,8 @@ namespace RegistroTecnico.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SueldoHora")
-                        .HasColumnType("int");
+                    b.Property<double>("SueldoHora")
+                        .HasColumnType("float");
 
                     b.HasKey("TecnicoID");
 
