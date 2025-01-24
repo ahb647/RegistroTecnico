@@ -2,7 +2,6 @@
 @using RegistroTecnico.Models
 @using RegistroTecnico.Services
 @inject ClienteServices clienteService
-@inject TecnicoServices tecnicoService
 @inject NavigationManager navigationManager
 
 <PageTitle>Registro de Clientes</PageTitle>
@@ -11,7 +10,7 @@
     <div class="card shadow-lg">
         <div class="card-header space-between">
             <h5 class="card-title">Registro de Clientes</h5>
-            <a href="/ClientesIndex/CrearClientes" class="btn btn-primary">
+            <a href="/ClientesIndex/CrearCliente" class="btn btn-primary">
                 <span class="bi bi-plus-square mt-3"></span> Crear
             </a>
         </div>
@@ -42,8 +41,13 @@
                                 <td>@cliente.FechaIngreso.ToShortDateString()</td>
                                 <td>@cliente.TecnicoID</td>
                                 <td class="text-center">
-                                    <a href="EditarCliente/@cliente.ClienteID" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                                    <a href="/EliminarCliente/@cliente.ClienteID" class="btn btn-outline-danger bi bi-trash"></a>
+                                    <!-- Botón Editar -->
+                                    <a href="/ClientesIndex/EditarCliente/@cliente.ClienteID" class="btn btn-outline-primary bi bi-pencil-square">
+                                    </a>
+
+                                    <!-- Botón Eliminar -->
+                                    <a href="/ClientesIndex/EliminarCliente/@cliente.ClienteID" class="btn btn-outline-danger bi bi-trash">
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -67,12 +71,9 @@
 @code {
     public List<RegistroTecnico.Models.Clientes> ListaClientes { get; set; } = new List<RegistroTecnico.Models.Clientes>();
 
-
-    // Inicialización de la lista de clientes
+    // Cargar la lista de clientes al inicializar
     protected override async Task OnInitializedAsync()
     {
-        ListaClientes = await clienteService.Listar(c => true); // Cargar todos los clientes
+        ListaClientes = await clienteService.Listar(c => true);
     }
-
-    private void Volver() => navigationManager.NavigateTo("/ClientesIndex/Clientes");
 }
