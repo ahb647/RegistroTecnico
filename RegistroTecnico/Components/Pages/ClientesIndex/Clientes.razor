@@ -1,0 +1,78 @@
+﻿@page "/ClientesIndex/Clientes"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject ClienteServices clienteService
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+
+<PageTitle>Registro de Clientes</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header space-between">
+            <h5 class="card-title">Registro de Clientes</h5>
+            <a href="/ClientesIndex/CrearClientes" class="btn btn-primary">
+                <span class="bi bi-plus-square mt-3"></span> Crear
+            </a>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table table-striped text-black">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>RNC</th>
+                        <th>Fecha de Ingreso</th>
+                        <th>ID Técnico Asignado</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ListaClientes.Any())
+                    {
+                        @foreach (var cliente in ListaClientes)
+                        {
+                            <tr>
+                                <td>@cliente.ClienteID</td>
+                                <td>@cliente.Nombres</td>
+                                <td>@cliente.Direccion</td>
+                                <td>@cliente.Rnc</td>
+                                <td>@cliente.FechaIngreso.ToShortDateString()</td>
+                                <td>@cliente.TecnicoID</td>
+                                <td class="text-center">
+                                    <a href="EditarCliente/@cliente.ClienteID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="/EliminarCliente/@cliente.ClienteID" class="btn btn-outline-danger bi bi-trash"></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center">No hay clientes registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <label>Total Clientes: @ListaClientes.Count()</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<RegistroTecnico.Models.Clientes> ListaClientes { get; set; } = new List<RegistroTecnico.Models.Clientes>();
+
+
+    // Inicialización de la lista de clientes
+    protected override async Task OnInitializedAsync()
+    {
+        ListaClientes = await clienteService.Listar(c => true); // Cargar todos los clientes
+    }
+
+    private void Volver() => navigationManager.NavigateTo("/ClientesIndex/Clientes");
+}
