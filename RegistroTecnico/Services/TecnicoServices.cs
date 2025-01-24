@@ -11,7 +11,7 @@ namespace RegistroTecnico.Services
         {
             _contexto = contexto;
         }
-        private async Task<bool> Existe(int tecnidoID)
+        public async Task<bool> Existe(int tecnidoID)
         {
 
             return await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == tecnidoID);
