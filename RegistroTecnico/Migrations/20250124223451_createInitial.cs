@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RegistroTecnico.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInitial : Migration
+    public partial class createInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,7 @@ namespace RegistroTecnico.Migrations
                     TecnicoID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SueldoHora = table.Column<int>(type: "int", nullable: false)
+                    SueldoHora = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

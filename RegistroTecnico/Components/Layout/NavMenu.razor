@@ -8,40 +8,37 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
+        <!-- Home -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
             </NavLink>
         </div>
 
+        <!-- Técnicos -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/TecnicosIndex/Tecnicos">
-                <span class="bi bi-list-ul-nav-menu" aria-hidden="true"></span> Lista de Técnicos
+                <span class="bi bi-wrench-adjustable" aria-hidden="true"></span> Lista de Técnicos
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/TecnicosIndex/CrearTecnico">
-                <span class="bi bi-pencil-square-nav-menu" aria-hidden="true"></span> Crear Técnico
+                <span class="bi bi-gear" aria-hidden="true"></span> Crear Técnico
             </NavLink>
         </div>
 
-
-        <!-- Carpeta de Clientes -->
+        <!-- Clientes -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/ClientesIndex/Clientes">
-                <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Lista de Clientes
+                <span class="bi bi-person" aria-hidden="true"></span> Lista de Clientes
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/ClientesIndex/CrearCliente">
-                <span class="bi bi-person-plus-fill-nav-menu" aria-hidden="true"></span> Crear Cliente
+                <span class="bi bi-pencil" aria-hidden="true"></span> Crear Cliente
             </NavLink>
         </div>
-
-
-
     </nav>
-
 </div>
