@@ -126,8 +126,5 @@ namespace RegistroTecnico.Services
             return await _contexto.SaveChangesAsync() > 0;
         }
 
-
-
-
     }
 }
