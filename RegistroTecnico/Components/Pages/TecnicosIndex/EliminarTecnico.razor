@@ -1,67 +1,80 @@
-﻿@page "/Tecnico/Delete/{TecnicoID:int}"
-@page "/TecnicoIndex/EliminarTecnico"
-@using TecnicosModel = RegistroTecnico.Models.Tecnicos;
-@using TecnicosPage = RegistroTecnico.Components.Pages.TecnicosIndex.Tecnicos;
-@using RegistroTecnico.Models
-@using RegistroTecnico.Services
+﻿@page "/TecnicoIndex/EliminarTecnico"
+@page "/EliminarTecnico/{TecnicoID:int}"
+
+@rendermode InteractiveServer
+
 @inject TecnicoServices tecnicoService
 @inject NavigationManager navigationManager
-@using Blazored.Toast.Services
-@inject ToastService toastService
 
 <PageTitle>Eliminar Técnico</PageTitle>
-<div class="container">
-    <div class="card shadow-lg">
-        @*header*@ 
-        <div class="card-header text-center">
-            <h5><strong>Datos del Técnico</strong></h5>
-        </div>
-        @*body*@ 
-        <div class="card-body">
-            <div class="text-center">
-                <h5><strong>¿Desea eliminar este técnico?</strong></h5>
+
+<EditForm Model="@Tecnico" OnValidSubmit="@OnValidSubmit">
+
+    <DataAnnotationsValidator />
+    <a href="" class="btn btn-outline-primary">Inicio</a>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Eliminar Técnico</h3>
             </div>
-            <ul class="mt-4">
-                <li><strong>Técnico ID: </strong>@TecnicoID</li>
-                <li><strong>Nombre: </strong>@Nombre</li>
-                <li><strong>Sueldo por Hora: </strong>@SueldoHora.ToString("N2")</li>
-            </ul>
-        </div>
-        @*Footer*@ 
-        <div class="card-footer text-center">
-            <a href="/Tecnico/Index" class="btn btn-primary"> <span class="bi bi-arrow-left"></span> Volver</a>
-            <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
+            <div class="card-body">
+                <h3><strong>¿Estás seguro de que quieres eliminar este técnico?</strong></h3>
+
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <h4>
+                        <strong>ID:</strong>
+                        @Tecnico.TecnicoID
+                    </h4>
+                </div>
+
+                <h4>
+                    <strong>Nombre:</strong>
+                    @Tecnico.Nombre
+                </h4>
+
+                <h4>
+                    <strong>Sueldo por Hora:</strong>
+                    @Tecnico.SueldoHora
+                </h4>
+
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-danger">Eliminar</button>
+                        <a href="/TecnicosIndex/Tecnicos" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
-@Mensaje
+
+</EditForm>
 
 @code {
-    [Parameter]
-    public int TecnicoID { get; set; }
-    public string Nombre { get; set; } = string.Empty!; // para que nombre no sea nulo
-    public int SueldoHora { get; set; }
+
+    [Parameter] public int TecnicoID { get; set; }
+
+ 
+
+    public RegistroTecnico.Models.Tecnicos Tecnico = new RegistroTecnico.Models.Tecnicos();
 
 
-    public Tecnicos Tecnico { get; set; } = new Tecnicos();
-    public string Mensaje { get; set; } = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-        Tecnico = await TecnicoServices.Buscar(TecnicoID);
+        if (TecnicoID != 0)
+        {
+            Tecnico = await tecnicoService.Buscar(TecnicoID);
+        }
     }
 
-    public async Task Eliminar()
-    {    //No puede reconocer el metodo buscar por algun motivo a pesar que yo coloque Services para que pueda 
-        var eliminado = await tecnicoService.Eliminar(TecnicoID);
+    private async void OnValidSubmit()
+    {
+        if (TecnicoID != 0)
+        {
+            await tecnicoService.Eliminar(TecnicoID);
+        }
 
-        if (eliminado)
-        {
-            toastService.ShowSuccess("Técnico eliminado correctamente");
-            navigationManager.NavigateTo("/Tecnico/Index");
-        }
-        else
-        {
-            toastService.ShowError("No se ha podido eliminar el técnico");
-        }
+        navigationManager.NavigateTo("/TecnicosIndex/Tecnicos");
     }
 }

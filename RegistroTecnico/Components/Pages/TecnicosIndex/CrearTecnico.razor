@@ -1,0 +1,65 @@
+﻿@page "/TecnicosIndex/CrearTecnico"
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+
+<PageTitle>Editar Técnico</PageTitle>
+
+<EditForm Model="@Tecnico" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator /><DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar</h5>
+            </div>
+
+            <div class="card-body">
+
+                @* Nombre *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="@Tecnico.Nombre" />
+                    <ValidationMessage For="@(() =>Tecnico.Nombre)" />
+                </div>
+
+                <DataAnnotationsValidator />
+                @* Sueldo por Hora *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Sueldo por Hora</strong></label>
+                    <InputNumber class="form-control" @bind-Value="@Tecnico.SueldoHora" />
+                </div>
+            </div>
+
+            @* Footer *@
+            <div class="card-footer text-center mt-2">
+                <a href="/TecnicosIndex/Tecnicos" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TecnicoID { get; set; }
+    public RegistroTecnico.Models.Tecnicos Tecnico = new RegistroTecnico.Models.Tecnicos();
+    
+
+    public void Nuevo()
+    {
+        Tecnico = new RegistroTecnico.Models.Tecnicos();
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (await tecnicoService.Guardar(Tecnico))
+        {
+            Nuevo();
+        }
+
+        navigationManager.NavigateTo("/TecnicosIndex/Tecnicos");
+    }
+
+}

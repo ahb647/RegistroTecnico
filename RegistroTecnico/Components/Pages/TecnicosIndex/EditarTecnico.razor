@@ -1,83 +1,83 @@
-﻿@page "/TecnicoIndex/Tecnicos"
-@using RegistroTecnico.Models
-@using RegistroTecnico.Services
+﻿@page "/TecnicosIndex/EditarTecnico"
+@page "/EditarTecnico/{TecnicoID:int}"
+
+@rendermode InteractiveServer
+
 @inject TecnicoServices tecnicoService
 @inject NavigationManager navigationManager
-@using Blazored.Toast.Services
-@inject ToastService toastService
 
 <PageTitle>Editar Técnico</PageTitle>
 
-<EditForm Model="Tecnico" OnValidSubmit="Modificar">
-    <ValidationSummary />
+<EditForm Model="@tecnico" OnValidSubmit="@OnValidSubmit">
+
+    <DataAnnotationsValidator />
+    <a href="" class="btn btn-outline-primary">Inicio</a>
+    
 
     <div class="container">
         <div class="card shadow-lg">
-            <div class="card-header text-center">
-                <h5 class="card-title">Editar</h5>
+            <div class="card-header">
+                <h3>@Titulo</h3>
             </div>
 
             <div class="card-body">
-                @* TecnicoID *@
-                <div class="mb-3">
-                    <label class="form-label"><strong>Técnico ID</strong></label>
-                    <InputNumber class="form-control" @bind-Value="TecnicoID" readonly />
-                </div>
+                @* Técnico ID *@
+               
 
                 @* Nombre *@
-                <div class="mb-3">
-                    <label class="form-label"><strong>Nombre</strong></label>
-                    <InputText class="form-control" @bind-Value="Nombre" />
-                    <ValidationMessage For="() =>Nombre" />
+                <label>Nombre</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@tecnico.Nombre" class="form-control" />
+                    <ValidationMessage For="@(() => tecnico.Nombre)" />
                 </div>
 
-                <DataAnnotationsValidator />
                 @* Sueldo por Hora *@
-                <div class="mb-3">
-                    <label class="form-label"><strong>Sueldo por Hora</strong></label>
-                    <InputNumber class="form-control" @bind-Value="SueldoHora" />
-                    <ValidationMessage For="() =>SueldoHora" />
+                <label>Sueldo por Hora</label>
+                <div class="input-group mb-3">
+                    <InputNumber @bind-Value="@tecnico.SueldoHora" class="form-control" />
+                    <ValidationMessage For="@(() => tecnico.SueldoHora)" />
                 </div>
-            </div>
 
-            @* Footer *@
-            <div class="card-footer text-center mt-2">
-                <a href="/Tecnico/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
-                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success">@TextoBoton</button>
+                        <a href="/TecnicosIndex/Tecnicos" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </EditForm>
 
 @code {
-    [Parameter]
-    public int TecnicoID { get; set; }
-    public Tecnicos Tecnico { get; set; } = new Tecnicos();
-    public string Nombre { get; set; } = string.Empty!;
-    public int SueldoHora { get; set; }
+    [Parameter] public int TecnicoID { get; set; }
+    public RegistroTecnico.Models.Tecnicos tecnico { get; set; } = new RegistroTecnico.Models.Tecnicos();
+    string TextoBoton = string.Empty;
+    string Titulo = string.Empty;
 
-
-    public List<Tecnicos> ListaTecnicos{ get; set; } = new List<Tecnicos>();
-
-    @*Buscar el técnico*@
     protected override async Task OnInitializedAsync()
     {
-        Tecnico = await TecnicoServices.Buscar(TecnicoID);
-    }
-
-
-    public async Task Modificar()
-    {   //aqui tambien dice que hay un fallo 
-        var paso = await TecnicoServices.Guardar(Tecnico);
-
-        if (paso)
+        if (TecnicoID != 0)
         {
-            toastService.ShowSuccess("Técnico modificado correctamente");
-            navigationManager.NavigateTo("/TecnicoIndex/Tecnicos");
+            tecnico = await tecnicoService.Buscar(TecnicoID);
+            TextoBoton = "Actualizar Técnico";
+            Titulo = "Editar Técnico";
         }
         else
         {
-            toastService.ShowError("No se ha podido modificar el técnico");
+            TextoBoton = "Registrar Técnico";
+            Titulo = "Nuevo Técnico";
         }
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (await tecnicoService.Guardar(tecnico))
+        {
+            tecnico = new RegistroTecnico.Models.Tecnicos();
+        }
+
+        navigationManager.NavigateTo("/TecnicosIndex/Tecnicos");
     }
 }

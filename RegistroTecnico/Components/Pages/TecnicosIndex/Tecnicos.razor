@@ -1,4 +1,4 @@
-﻿@page "/TecnicoIndex/Tecnicos"
+﻿@page "/TecnicosIndex/Tecnicos"
 @using RegistroTecnico.Models
 @using RegistroTecnico.Services 
 @inject TecnicoServices tecnicoService
@@ -9,7 +9,7 @@
     <div class="card shadow-lg">
         <div class="card-header space-between">
             <h5 class="card-title">Registro de Técnicos</h5>
-            <a href="/Tecnico/Create" class="btn btn-primary">
+            <a href="/TecnicosIndex/CrearTecnico" class="btn btn-primary">
                 <span class="bi bi-plus-square mt-3"></span> Crear
             </a>
         </div>
@@ -34,8 +34,8 @@
                                 <td>@tecnico.Nombre</td>
                                 <td>@tecnico.SueldoHora</td>
                                 <td class="text-center">
-                                    <a href="/Tecnico/Edit/@tecnico.TecnicoID" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                                    <a href="/Tecnico/Delete/@tecnico.TecnicoID" class="btn btn-outline-danger bi bi-trash"></a>
+                                    <a href="EditarTecnico/@tecnico.TecnicoID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="/EliminarTecnico/@tecnico.TecnicoID" class="btn btn-outline-danger bi bi-trash"></a>
                                 </td>
                             </tr>
                         }
@@ -69,7 +69,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Inicializar la lista de técnicos con el filtro por defecto
-        ListaTecnicos = await tecnicoService.Listar(t => t.TecnicoID > 0);
+        ListaTecnicos = await tecnicoService.Listar(t => true);
     }
 
     // Método para buscar técnicos según los filtros

@@ -11,6 +11,8 @@ namespace RegistroTecnico.Context
         public TecnicoContext(DbContextOptions<TecnicoContext> options) : base(options) { }
 
         public DbSet<Tecnicos> Tecnicos { get; set; }
+
+        public DbSet<Clientes> Clientes { get; set; }
     }
 
 
