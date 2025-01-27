@@ -1,5 +1,26 @@
-﻿<h3>CiudadIndex</h3>
+﻿@page "/Ciudad/CiudadIndex"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject CiudadServices ciudadService
+@inject NavigationManager navigationManager
+
+
+
+<h3>CiudadIndex</h3>
+
+
+
 
 @code {
 
+
+
+    public List<RegistroTecnico.Models.Ciudad> ListaCiudades { get; set; } = new List<RegistroTecnico.Models.Ciudad>();
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar la lista de Ciudades
+        ListaCiudades = await ciudadService.Listar(c => true);
+
+    }
+ 
 }
