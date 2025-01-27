@@ -27,6 +27,7 @@ builder.Services.AddDbContextFactory<TecnicoContext>(options =>
 // Registrar servicios personalizados
 builder.Services.AddScoped<TecnicoServices>();
 builder.Services.AddScoped<ClienteServices>();
+builder.Services.AddScoped<CiudadServices>();
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddBlazoredToast();
 
