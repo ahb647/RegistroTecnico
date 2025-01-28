@@ -6,12 +6,9 @@ namespace RegistroTecnico.Services
 {
     public class CiudadServices
     {
-
-        public class CiudadService
-        {
             private readonly TecnicoContext _contexto;
 
-            public CiudadService(TecnicoContext contexto)
+            public CiudadServices(TecnicoContext contexto)
             {
                 _contexto = contexto;
             }
@@ -83,4 +80,4 @@ namespace RegistroTecnico.Services
         }
     }
 
-}
+
