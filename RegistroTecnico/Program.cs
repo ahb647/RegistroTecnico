@@ -28,6 +28,7 @@ builder.Services.AddDbContextFactory<TecnicoContext>(options =>
 builder.Services.AddScoped<TecnicoServices>();
 builder.Services.AddScoped<ClienteServices>();
 builder.Services.AddScoped<CiudadServices>();
+builder.Services.AddScoped<TicketsServices>();
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddBlazoredToast();
 
