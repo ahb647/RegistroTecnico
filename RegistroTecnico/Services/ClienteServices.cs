@@ -1,5 +1,6 @@
 ﻿using RegistroTecnico.Models;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace RegistroTecnico.Services
 {
@@ -18,9 +19,23 @@ namespace RegistroTecnico.Services
             return await _contexto.Clientes.AnyAsync(c => c.ClienteID == clienteID);
         }
 
+        // Verificar si ya existe un cliente con el mismo nombre o RNC
+        private async Task<bool> ExisteDuplicado(string nombres, int rnc, int? clienteID = null)
+        {
+            return await _contexto.Clientes.AnyAsync(c =>
+                (c.Nombres == nombres || c.Rnc == rnc) &&
+                (clienteID == null || c.ClienteID != clienteID));
+        }
+
         // Método para insertar un nuevo cliente
         private async Task<bool> Insertar(Clientes cliente)
         {
+            // Validar unicidad de nombre y RNC
+            if (await ExisteDuplicado(cliente.Nombres, cliente.Rnc))
+            {
+                throw new InvalidOperationException("Ya existe un cliente con el mismo nombre o RNC.");
+            }
+
             cliente.FechaIngreso = DateTime.Now; // Asignar fecha de ingreso actual
             _contexto.Clientes.Add(cliente);
             return await _contexto.SaveChangesAsync() > 0;
@@ -29,6 +44,12 @@ namespace RegistroTecnico.Services
         // Método para modificar un cliente existente
         private async Task<bool> Modificar(Clientes cliente)
         {
+            // Validar unicidad de nombre y RNC
+            if (await ExisteDuplicado(cliente.Nombres, cliente.Rnc, cliente.ClienteID))
+            {
+                throw new InvalidOperationException("Ya existe un cliente con el mismo nombre o RNC.");
+            }
+
             _contexto.Clientes.Update(cliente);
             return await _contexto.SaveChangesAsync() > 0;
         }

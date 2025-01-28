@@ -13,6 +13,8 @@ namespace RegistroTecnico.Context
         public DbSet<Tecnicos> Tecnicos { get; set; }
 
         public DbSet<Clientes> Clientes { get; set; }
+
+        public DbSet<Ciudad> Ciudades { get; set; }
     }
 
 
