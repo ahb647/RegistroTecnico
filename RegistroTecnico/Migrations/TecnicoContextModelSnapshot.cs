@@ -31,7 +31,6 @@ namespace RegistroTecnico.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CiudadID"));
 
                     b.Property<string>("CiudadNombre")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CiudadID");
@@ -57,7 +56,9 @@ namespace RegistroTecnico.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Nombres")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Rnc")
                         .HasColumnType("int");
@@ -66,6 +67,8 @@ namespace RegistroTecnico.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ClienteID");
+
+                    b.HasIndex("TecnicoID");
 
                     b.ToTable("Clientes");
                 });
@@ -88,6 +91,79 @@ namespace RegistroTecnico.Migrations
                     b.HasKey("TecnicoID");
 
                     b.ToTable("Tecnicos");
+                });
+
+            modelBuilder.Entity("RegistroTecnico.Models.Tickets", b =>
+                {
+                    b.Property<int>("TicketID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketID"));
+
+                    b.Property<string>("Asunto")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ClienteID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Prioridad")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("TecnicoID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TiempoInvertido")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("TicketID");
+
+                    b.HasIndex("ClienteID");
+
+                    b.HasIndex("TecnicoID");
+
+                    b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("RegistroTecnico.Models.Clientes", b =>
+                {
+                    b.HasOne("RegistroTecnico.Models.Tecnicos", "Tecnico")
+                        .WithMany()
+                        .HasForeignKey("TecnicoID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tecnico");
+                });
+
+            modelBuilder.Entity("RegistroTecnico.Models.Tickets", b =>
+                {
+                    b.HasOne("RegistroTecnico.Models.Clientes", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RegistroTecnico.Models.Tecnicos", "Tecnico")
+                        .WithMany()
+                        .HasForeignKey("TecnicoID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Tecnico");
                 });
 #pragma warning restore 612, 618
         }
