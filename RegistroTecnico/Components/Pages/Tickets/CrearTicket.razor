@@ -1,5 +1,129 @@
-﻿<h3>CrearTicket</h3>
+﻿@page "/Tickets/CrearTicket"
+@inject TicketsServices ticketService
+@inject TecnicoServices tecnicoService
+@inject ClienteServices clienteService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Crear Ticket</PageTitle>
+
+<EditForm Model="@NuevoTicket" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Crear Ticket</h5>
+            </div>
+
+            <div class="card-body">
+                @* Asunto *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Asunto</strong></label>
+                    <InputText class="form-control" @bind-Value="@NuevoTicket.Asunto" />
+                    <ValidationMessage For="@(() => NuevoTicket.Asunto)" />
+                </div>
+
+                @* Descripción *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Descripción</strong></label>
+                    <InputTextArea class="form-control" @bind-Value="@NuevoTicket.Descripcion" />
+                    <ValidationMessage For="@(() => NuevoTicket.Descripcion)" />
+                </div>
+
+                @* Técnico (Opcional) *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Técnico</strong></label>
+                    <InputSelect class="form-control" @bind-Value="NuevoTicket.TecnicoID">
+                        <option value="0">No asignar técnico</option>
+                        @foreach (var tecnico in ListaTecnicos)
+                        {
+                            <option value="@tecnico.TecnicoID">@tecnico.Nombre</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NuevoTicket.TecnicoID)" />
+                </div>
+
+                @* Cliente (Opcional) *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Cliente</strong></label>
+                    <InputSelect class="form-control" @bind-Value="NuevoTicket.ClienteID">
+                        <option value="0">No asignar cliente</option>
+                        @foreach (var cliente in ListaClientes)
+                        {
+                            <option value="@cliente.ClienteID">@cliente.Nombres</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NuevoTicket.ClienteID)" />
+                </div>
+
+                @* Prioridad *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Prioridad</strong></label>
+                    <InputText class="form-control" @bind-Value="@NuevoTicket.Prioridad" />
+                    <ValidationMessage For="@(() => NuevoTicket.Prioridad)" />
+                </div>
+
+                @* Mostrar error si ocurre *@
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-2">
+                        <strong>Error:</strong> @ErrorMessage
+                    </div>
+                }
+            </div>
+
+            @* Footer *@
+            <div class="card-footer text-center mt-2">
+                <a href="/TicketsIndex/Tickets" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
 
 @code {
+    public Tickets NuevoTicket { get; set; } = new Tickets();
+    public List<Tecnicos> ListaTecnicos { get; set; } = new();
+    public List<Clientes> ListaClientes { get; set; } = new();
+    public string ErrorMessage { get; set; } = string.Empty;
 
+    // Cargar datos de técnicos y clientes al inicializar el componente
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTecnicos = await tecnicoService.Listar(t => true);
+        ListaClientes = await clienteService.Listar(c => true);
+    }
+
+    // Método para manejar la sumisión válida del formulario
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            // Llamada al servicio para guardar el ticket
+            bool resultado = await ticketService.Guardar(NuevoTicket);
+
+            if (resultado)
+            {
+                navigationManager.NavigateTo("/Tickets/TicketsIndex");
+            }
+            else
+            {
+                ErrorMessage = "Error al guardar el ticket.";
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Captura errores específicos de operaciones inválidas
+            ErrorMessage = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            // Captura errores generales
+            ErrorMessage = $"Ha ocurrido un error: {ex.Message}";
+        }
+    }
 }
