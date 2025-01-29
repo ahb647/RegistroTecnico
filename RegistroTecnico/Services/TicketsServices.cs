@@ -17,10 +17,10 @@ namespace RegistroTecnico.Services
         public async Task<bool> Crear(Tickets ticket)
         {
             // Verifica si el cliente y el técnico existen
-            if (!await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
+            if (ticket.ClienteID > 0 && !await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
                 throw new InvalidOperationException("El cliente especificado no existe.");
 
-            if (!await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
+            if (ticket.TecnicoID > 0 && !await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
                 throw new InvalidOperationException("El técnico especificado no existe.");
 
             ticket.Fecha = DateTime.Now; // Asigna la fecha actual al ticket
@@ -44,19 +44,19 @@ namespace RegistroTecnico.Services
             if (ticket.TecnicoID != ticketExistente.TecnicoID)
             {
                 // Cambiar el técnico asignado si es necesario
-                if (!await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
+                if (ticket.TecnicoID > 0 && !await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
                     throw new InvalidOperationException("El nuevo técnico no existe.");
 
-                ticketExistente.TecnicoID = ticket.TecnicoID;
+                ticketExistente.TecnicoID = ticket.TecnicoID > 0 ? ticket.TecnicoID : 0;
             }
 
             if (ticket.ClienteID != ticketExistente.ClienteID)
             {
                 // Cambiar el cliente asignado si es necesario
-                if (!await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
+                if (ticket.ClienteID > 0 && !await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
                     throw new InvalidOperationException("El nuevo cliente no existe.");
 
-                ticketExistente.ClienteID = ticket.ClienteID;
+                ticketExistente.ClienteID = ticket.ClienteID > 0 ? ticket.ClienteID : 0;
             }
 
             _contexto.Tickets.Update(ticketExistente);
@@ -65,46 +65,60 @@ namespace RegistroTecnico.Services
 
         public async Task<bool> Guardar(Tickets ticket)
         {
-            var ticketExistente = await _contexto.Tickets.FindAsync(ticket.TicketID);
-
-            if (ticketExistente == null)
+            try
             {
-                // Validar que el cliente y técnico existan
-                if (ticket.ClienteID > 0 && !await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
-                    ticket.ClienteID = 0; // Asignar como "sin cliente"
+                var ticketExistente = await _contexto.Tickets.FindAsync(ticket.TicketID);
 
-                if (ticket.TecnicoID > 0 && !await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
-                    ticket.TecnicoID = 0; // Asignar como "sin técnico"
-
-                ticket.Fecha = DateTime.Now; // Fecha actual
-                _contexto.Tickets.Add(ticket);
-            }
-            else
-            {
-                // Editar ticket existente
-                ticketExistente.Prioridad = ticket.Prioridad;
-                ticketExistente.Asunto = ticket.Asunto;
-                ticketExistente.Descripcion = ticket.Descripcion;
-                ticketExistente.TiempoInvertido = ticket.TiempoInvertido;
-
-                if (ticket.TecnicoID != ticketExistente.TecnicoID)
+                if (ticketExistente == null)
                 {
-                    ticketExistente.TecnicoID = (await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
-                        ? ticket.TecnicoID
-                        : 0; // Si no existe, marcar como "sin técnico"
+                    // Validar que el cliente y técnico existan antes de crear el ticket
+                    if (ticket.ClienteID > 0 && !await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
+                        throw new InvalidOperationException("El cliente especificado no existe.");
+
+                    if (ticket.TecnicoID > 0 && !await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
+                        throw new InvalidOperationException("El técnico especificado no existe.");
+
+                    ticket.Fecha = DateTime.Now; // Fecha actual
+                    _contexto.Tickets.Add(ticket);
+                }
+                else
+                {
+                    // Editar ticket existente
+                    ticketExistente.Prioridad = ticket.Prioridad;
+                    ticketExistente.Asunto = ticket.Asunto;
+                    ticketExistente.Descripcion = ticket.Descripcion;
+                    ticketExistente.TiempoInvertido = ticket.TiempoInvertido;
+
+                    if (ticket.TecnicoID != ticketExistente.TecnicoID)
+                    {
+                        // Cambiar el técnico asignado si es necesario
+                        if (ticket.TecnicoID > 0 && !await _contexto.Tecnicos.AnyAsync(t => t.TecnicoID == ticket.TecnicoID))
+                            throw new InvalidOperationException("El nuevo técnico no existe.");
+
+                        ticketExistente.TecnicoID = ticket.TecnicoID > 0 ? ticket.TecnicoID : 0; // Si no existe, asignar como "sin técnico"
+                    }
+
+                    if (ticket.ClienteID != ticketExistente.ClienteID)
+                    {
+                        // Cambiar el cliente asignado si es necesario
+                        if (ticket.ClienteID > 0 && !await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
+                            throw new InvalidOperationException("El nuevo cliente no existe.");
+
+                        ticketExistente.ClienteID = ticket.ClienteID > 0 ? ticket.ClienteID : 0; // Si no existe, asignar como "sin cliente"
+                    }
+
+                    _contexto.Tickets.Update(ticketExistente);
                 }
 
-                if (ticket.ClienteID != ticketExistente.ClienteID)
-                {
-                    ticketExistente.ClienteID = (await _contexto.Clientes.AnyAsync(c => c.ClienteID == ticket.ClienteID))
-                        ? ticket.ClienteID
-                        : 0; // Si no existe, marcar como "sin cliente"
-                }
-
-                _contexto.Tickets.Update(ticketExistente);
+                // Guardar cambios en la base de datos
+                return await _contexto.SaveChangesAsync() > 0;
             }
-
-            return await _contexto.SaveChangesAsync() > 0;
+            catch (Exception ex)
+            {
+                // Manejo detallado del error
+                Console.WriteLine($"Error al guardar el ticket: {ex.Message}");
+                throw new InvalidOperationException("Hubo un error al intentar guardar el ticket. Detalles: " + ex.Message);
+            }
         }
 
         // Buscar un ticket por ID
