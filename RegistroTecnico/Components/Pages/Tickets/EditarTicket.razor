@@ -1,0 +1,86 @@
+﻿@page "/Tickets/EditarTicket"
+@page "/EditarTicket/{TicketID:int}"
+
+@rendermode InteractiveServer
+
+@inject TicketsServices ticketService
+@inject NavigationManager navigationManager
+
+<PageTitle>Editar Ticket</PageTitle>
+
+<EditForm Model="@Ticket" OnValidSubmit="@OnValidSubmit">
+
+    <DataAnnotationsValidator />
+    <a href="" class="btn btn-outline-primary">Inicio</a>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>@Titulo</h3>
+            </div>
+
+            <div class="card-body">
+                @* Asunto *@
+                <label>Asunto</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@Ticket.Asunto" class="form-control" />
+                    <ValidationMessage For="@(() => Ticket.Asunto)" />
+                </div>
+
+                @* Descripción *@
+                <label>Descripción</label>
+                <div class="input-group mb-3">
+                    <InputTextArea @bind-Value="@Ticket.Descripcion" class="form-control" />
+                    <ValidationMessage For="@(() => Ticket.Descripcion)" />
+                </div>
+
+                @* Prioridad *@
+                <label>Prioridad</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@Ticket.Prioridad" class="form-control" />
+                    <ValidationMessage For="@(() => Ticket.Prioridad)" />
+                </div>
+
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success">@TextoBoton</button>
+                        <a href="/Tickets/TicketsIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter] public int TicketID { get; set; }
+    public Tickets Ticket { get; set; } = new Tickets();
+    string TextoBoton = string.Empty;
+    string Titulo = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TicketID != 0)
+        {
+            Ticket = await ticketService.Buscar(TicketID); // Cargar el ticket para editar
+            TextoBoton = "Actualizar Ticket";
+            Titulo = "Editar Ticket";
+        }
+        else
+        {
+            TextoBoton = "Registrar Ticket";
+            Titulo = "Nuevo Ticket";
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (await ticketService.Guardar(Ticket)) // Guardar o actualizar el ticket
+        {
+            Ticket = new Tickets(); // Limpiar el objeto después de guardar
+        }
+
+        navigationManager.NavigateTo("/Tickets/TicketsIndex"); // Redirigir después de guardar
+    }
+}
