@@ -55,7 +55,7 @@
                                 <td>@ticket.TiempoInvertido hrs</td>
                                 <td class="text-center">
                                     <a href="EditarTicket/@ticket.TicketID" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                                    <a href="javascript:void(0)" @onclick="() => EliminarTicket(ticket.TicketID)" class="btn btn-outline-danger bi bi-trash"></a>
+                                     <a href="/EliminarTicket/@ticket.TicketID" class="btn btn-outline-danger bi bi-trash"></a>
                                 </td>
                             </tr>
                         }
