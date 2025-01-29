@@ -1,0 +1,139 @@
+﻿@page "/Tickets/TicketsIndex"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject TicketsServices ticketService
+@inject NavigationManager navigationManager
+
+<PageTitle>Gestión de Tickets</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header space-between">
+            <h5 class="card-title">Lista de Tickets</h5>
+            <a href="/TicketsIndex/CrearTicket" class="btn btn-primary">
+                <span class="bi bi-plus-square mt-3"></span> Crear Ticket
+            </a>
+        </div>
+
+        <div class="card-body">
+            <!-- Barra de Búsqueda de Ticket por ID -->
+            <div class="mb-3 d-flex">
+                <input type="number" class="form-control" placeholder="Buscar Ticket por ID" @bind="TicketIDBusqueda" />
+                <button class="btn btn-outline-primary ms-2" @onclick="BuscarTicket">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <button class="btn btn-outline-secondary ms-2" @onclick="RestablecerBusqueda">
+                    <i class="bi bi-arrow-clockwise"></i> Restablecer
+                </button>
+            </div>
+
+            <table class="table table-hover">
+                <thead class="table table-striped text-black">
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Prioridad</th>
+                        <th>Asunto</th>
+                        <th>Cliente</th>
+                        <th>Técnico</th>
+                        <th>Tiempo Invertido</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ListaTickets.Any())
+                    {
+                        @foreach (var ticket in ListaTickets)
+                        {
+                            <tr>
+                                <td>@ticket.TicketID</td>
+                                <td>@ticket.Fecha.ToShortDateString()</td>
+                                <td>@ticket.Prioridad</td>
+                                <td>@ticket.Asunto</td>
+                                <td>@(ticket.Cliente != null ? ticket.Cliente.Nombres : "Ticket sin Cliente")</td>
+                                <td>@(ticket.Tecnico != null ? ticket.Tecnico.Nombre : "Ticket sin Técnico")</td>
+                                <td>@ticket.TiempoInvertido hrs</td>
+                                <td class="text-center">
+                                    <a href="EditarTicket/@ticket.TicketID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="javascript:void(0)" @onclick="() => EliminarTicket(ticket.TicketID)" class="btn btn-outline-danger bi bi-trash"></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No hay tickets registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <label>Total Tickets: @ListaTickets.Count()</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Tickets> ListaTickets { get; set; } = new List<Tickets>();
+
+    public int? TicketIDBusqueda { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar todos los tickets al inicio
+        ListaTickets = await ticketService.Listar(t => true);
+        await RevisarTicketsHuérfanos();
+    }
+
+    private async Task BuscarTicket()
+    {
+        if (TicketIDBusqueda.HasValue)
+        {
+            var resultado = await ticketService.Buscar(TicketIDBusqueda.Value);
+            ListaTickets = resultado != null ? new List<Tickets> { resultado } : new List<Tickets>();
+        }
+    }
+
+    private async Task RestablecerBusqueda()
+    {
+        TicketIDBusqueda = null;
+        ListaTickets = await ticketService.Listar(t => true);
+    }
+
+    private async Task RevisarTicketsHuérfanos()
+    {
+        foreach (var ticket in ListaTickets)
+        {
+            bool cambios = false;
+
+            if (ticket.ClienteID > 0 && ticket.Cliente == null)
+            {
+                ticket.ClienteID = 0;
+                cambios = true;
+            }
+
+            if (ticket.TecnicoID > 0 && ticket.Tecnico == null)
+            {
+                ticket.TecnicoID = 0;
+                cambios = true;
+            }
+
+            if (cambios)
+            {
+                await ticketService.Guardar(ticket);
+            }
+        }
+    }
+
+    private async Task EliminarTicket(int ticketID)
+    {
+        bool eliminado = await ticketService.Eliminar(ticketID);
+        if (eliminado)
+        {
+            ListaTickets = await ticketService.Listar(t => true);
+        }
+    }
+}
