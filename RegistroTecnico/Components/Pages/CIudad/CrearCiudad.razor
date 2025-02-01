@@ -1,0 +1,87 @@
+﻿@page "/Ciudad/CrearCiudad"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject CiudadServices ciudadService
+@inject NavigationManager navigationManager
+
+
+@rendermode InteractiveServer
+
+<PageTitle>Crear Ciudad</PageTitle>
+
+<EditForm Model="@ciudad" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Nueva Ciudad</h5>
+            </div>
+
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ErrorMessage
+                    </div>
+                }
+
+                @* Nombre *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="@ciudad.CiudadNombre" />
+                    <ValidationMessage For="@(() => ciudad.CiudadNombre)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center mt-2">
+                <a href="/Ciudad/CiudadIndex" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public RegistroTecnico.Models.Ciudad ciudad { get; set; } = new RegistroTecnico.Models.Ciudad();
+    public List<RegistroTecnico.Models.Ciudad> ListaCiudades { get; set; } = new List<RegistroTecnico.Models.Ciudad>();
+
+
+    public string ErrorMessage { get; set; } = string.Empty;
+
+  
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCiudades = await ciudadService.Listar(c => true); // Obtener la lista de ciudades disponibles
+    }
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            // Intenta guardar la ciudad
+            if (await ciudadService.Guardar(ciudad))
+            {
+                // Después de guardar el cliente, limpiamos el formulario
+                ciudad = new RegistroTecnico.Models.Ciudad();
+                ErrorMessage = string.Empty; // Limpia cualquier mensaje de error previo
+
+                
+                navigationManager.NavigateTo("/Ciudad/CiudadIndex");
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Captura la excepción si ocurre un duplicado
+            ErrorMessage = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            // Captura cualquier otro error
+            ErrorMessage = "Ocurrió un error inesperado. Por favor, intenta nuevamente.";
+        }
+    }
+}
