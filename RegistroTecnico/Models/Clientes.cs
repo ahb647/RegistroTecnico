@@ -9,12 +9,6 @@ namespace RegistroTecnico.Models
         [Key]
         public int ClienteID { get; set; }
 
-      
-        
-
-        
-       
-
         [Required]
         [StringLength(100)]
         public string? Nombres { get; set; }
