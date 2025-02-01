@@ -7,7 +7,7 @@ namespace RegistroTecnico.Models
 
         [Key]
         public int CiudadID { get; set; }
-        public string CiudadNombre { get; set; }
+        public string? CiudadNombre { get; set; }
 
     }
 }
