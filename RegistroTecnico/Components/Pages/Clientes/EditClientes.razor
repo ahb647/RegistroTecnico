@@ -1,0 +1,114 @@
+﻿@page "/Clientes/EditClientes"
+@page "/EditClientes/{ClienteID:int}"
+
+@rendermode InteractiveServer
+
+@inject ClienteServices clienteService
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+
+<PageTitle>Editar Cliente</PageTitle>
+
+<EditForm Model="@cliente" OnValidSubmit="@OnValidSubmit">
+
+    <DataAnnotationsValidator />
+    <a href="" class="btn btn-outline-primary">Inicio</a>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>@Titulo</h3>
+            </div>
+
+            <div class="card-body">
+                @* Cliente ID (No Editable) *@
+               
+
+                @* Nombre *@
+                <label>Nombre</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@cliente.Nombres" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.Nombres)" />
+                </div>
+
+                @* Dirección *@
+                <label>Dirección</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@cliente.Direccion" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.Direccion)" />
+                </div>
+
+                @* RNC *@
+                <label>RNC</label>
+                <div class="input-group mb-3">
+                    <InputNumber @bind-Value="@cliente.Rnc" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.Rnc)" />
+                </div>
+
+                @* Límite de Crédito *@
+                <label>Límite de Crédito</label>
+                <div class="input-group mb-3">
+                    <InputNumber @bind-Value="@cliente.LimiteCredito" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.LimiteCredito)" />
+                </div>
+
+                @* Técnico Asignado *@
+                <label>Técnico Asignado</label>
+                <div class="input-group mb-3">
+                    <InputSelect @bind-Value="@cliente.TecnicoID" class="form-control">
+                        <option value="">Seleccione un técnico</option>
+                        @foreach (var tecnico in ListaTecnicos)
+                        {
+                            <option value="@tecnico.TecnicoID">@tecnico.Nombre</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => cliente.TecnicoID)" />
+                </div>
+
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success">@TextoBoton</button>
+                        <a href="/Clientes/ClientesIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter] public int ClienteID { get; set; }
+    public RegistroTecnico.Models.Clientes cliente { get; set; } = new RegistroTecnico.Models.Clientes();
+    public List<RegistroTecnico.Models.Tecnicos> ListaTecnicos { get; set; } = new List<RegistroTecnico.Models.Tecnicos>();
+    string TextoBoton = string.Empty;
+    string Titulo = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar lista de técnicos para el dropdown
+        ListaTecnicos = await tecnicoService.Listar(t => true);
+
+        if (ClienteID != 0)
+        {
+            cliente = await clienteService.Buscar(ClienteID);
+            TextoBoton = "Actualizar Cliente";
+            Titulo = "Editar Cliente";
+        }
+        else
+        {
+            TextoBoton = "Registrar Cliente";
+            Titulo = "Nuevo Cliente";
+        }
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (await clienteService.Guardar(cliente))
+        {
+            cliente = new RegistroTecnico.Models.Clientes();
+        }
+
+        navigationManager.NavigateTo("/Clientes/ClientesIndex");
+    }
+}
