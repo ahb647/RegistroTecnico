@@ -1,0 +1,75 @@
+﻿@page "/Ciudad/CiudadIndex"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject CiudadServices ciudadService
+@inject NavigationManager navigationManager
+
+
+
+<PageTitle>Registro de Ciudades</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header space-between">
+            <h5 class="card-title">Registro de ciudades</h5>
+            <a href="/Ciudad/CrearCiudad" class="btn btn-primary">
+                <span class="bi bi-plus-square mt-3"></span> Crear
+            </a>
+        </div>
+
+
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table table-striped text-black">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ListaCiudades.Any())
+                    {
+                        @foreach (var ciudad in ListaCiudades)
+                        {
+                            <tr>
+                                <td>@ciudad.CiudadID</td>
+                                <td>@ciudad.CiudadNombre</td>
+                                <td>
+                                    <a href="/EditCiudad/@ciudad.CiudadID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="/DeleteCiudad/@ciudad.CiudadID" class="btn btn-outline-danger bi bi-trash" ></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No hay ciudades registradas.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <label>Total Ciudades @ListaCiudades.Count()</label>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+
+
+
+    public List<RegistroTecnico.Models.Ciudad> ListaCiudades { get; set; } = new List<RegistroTecnico.Models.Ciudad>();
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar la lista de Ciudades
+        ListaCiudades = await ciudadService.Listar(c => true);
+
+    }
+ 
+}

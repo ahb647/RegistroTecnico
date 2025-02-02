@@ -1,5 +1,5 @@
-﻿@page "/TecnicosIndex/EditarTecnico"
-@page "/EditarTecnico/{TecnicoID:int}"
+﻿@page "/Tecnicos/EditTecnico"
+@page "/EditTecnico/{TecnicoID:int}"
 
 @rendermode InteractiveServer
 
@@ -41,7 +41,7 @@
                 <div class="card-footer d-flex justify-content-center">
                     <div class="btn-group">
                         <button class="btn btn-outline-success">@TextoBoton</button>
-                        <a href="/TecnicosIndex/Tecnicos" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                        <a href="/Tecnicos/TecnicosIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                     </div>
                 </div>
             </div>
@@ -78,6 +78,6 @@
             tecnico = new RegistroTecnico.Models.Tecnicos();
         }
 
-        navigationManager.NavigateTo("/TecnicosIndex/Tecnicos");
+        navigationManager.NavigateTo("/Tecnicos/TecnicosIndex");
     }
 }

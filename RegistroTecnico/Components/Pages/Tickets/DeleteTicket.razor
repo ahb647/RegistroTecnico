@@ -1,0 +1,77 @@
+﻿@page "/Tickets/DeleteTicket"
+@page "/DeleteTicket/{TicketID:int}"
+
+@rendermode InteractiveServer
+
+@inject TicketsServices ticketService
+@inject NavigationManager navigationManager
+
+<PageTitle>Eliminar Ticket</PageTitle>
+
+<EditForm Model="@Ticket" OnValidSubmit="@OnValidSubmit">
+
+    <DataAnnotationsValidator />
+    <a href="" class="btn btn-outline-primary">Inicio</a>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Eliminar Ticket</h3>
+            </div>
+            <div class="card-body">
+                <h3><strong>¿Estás seguro de que quieres eliminar este ticket?</strong></h3>
+
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <h4>
+                        <strong>ID:</strong>
+                        @Ticket.TicketID
+                    </h4>
+                </div>
+
+                <h4>
+                    <strong>Asunto:</strong>
+                    @Ticket.Asunto
+                </h4>
+
+                <h4>
+                    <strong>Descripción:</strong>
+                    @Ticket.Descripcion
+                </h4>
+
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-danger">Eliminar</button>
+                        <a href="/Tickets/TicketsIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+
+    [Parameter] public int TicketID { get; set; }
+
+    public Tickets Ticket = new Tickets();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TicketID != 0)
+        {
+            Ticket = await ticketService.Buscar(TicketID); // Cargar el ticket
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (TicketID != 0)
+        {
+            await ticketService.Eliminar(TicketID);  // Eliminar el ticket
+        }
+
+        navigationManager.NavigateTo("/Tickets/TicketsIndex"); // Redirigir después de eliminar
+    }
+}

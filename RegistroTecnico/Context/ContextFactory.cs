@@ -9,7 +9,7 @@ namespace RegistroTecnico.Context
         {
             // Configura el DbContext usando la cadena de conexión de Somee.
             var optionsBuilder = new DbContextOptionsBuilder<TecnicoContext>();
-            optionsBuilder.UseSqlServer("workstation id=RegistroTecnicoAdrian.mssql.somee.com;packet size=4096;user id=AHB_SQLLogin_2;pwd=3egw6zk3ao;data source=RegistroTecnicoAdrian.mssql.somee.com;persist security info=False;initial catalog=RegistroTecnicoAdrian;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("workstation id=AdrianDB.mssql.somee.com;packet size=4096;user id=AHB_SQLLogin_1;pwd=419y65tsvd;data source=AdrianDB.mssql.somee.com;persist security info=False;initial catalog=AdrianDB;TrustServerCertificate=True");
 
             return new TecnicoContext(optionsBuilder.Options);
         }

@@ -1,0 +1,82 @@
+﻿@page "/Ciudad/EditCiudad"
+@page "/EditCiudad/{CiudadID:int}"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject CiudadServices ciudadService
+@inject NavigationManager navigationManager
+
+
+@rendermode InteractiveServer
+
+
+<PageTitle>Editar Ciudad</PageTitle>
+
+<EditForm Model="@ciudad" OnValidSubmit="@OnValidSubmit">
+
+    <DataAnnotationsValidator />
+    <a href="" class="btn btn-outline-primary">Inicio</a>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>@Titulo</h3>
+            </div>
+
+            <div class="card-body">
+                @* Nombre *@
+                <label>Nombre</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@ciudad.CiudadNombre" class="form-control" />
+                    <ValidationMessage For="@(() => ciudad.CiudadNombre)" />
+                </div>
+
+
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success">@TextoBoton</button>
+                        <a href="/Ciudad/CiudadIndex"class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+    [Parameter] public int CiudadID { get; set; }
+    public RegistroTecnico.Models.Ciudad ciudad { get; set; } = new RegistroTecnico.Models.Ciudad();
+    public List<RegistroTecnico.Models.Ciudad> ListaCiudades { get; set; } = new List<RegistroTecnico.Models.Ciudad>();
+
+    string TextoBoton = string.Empty;
+    string Titulo = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar lista de técnicos para el dropdown
+        ListaCiudades = await ciudadService.Listar(t => true);
+
+        if (CiudadID != 0)
+        {
+            ciudad = await ciudadService.Buscar(CiudadID);
+            TextoBoton = "Actualizar Ciudad";
+            Titulo = "Editar Ciudad";
+        }
+        else
+        {
+            TextoBoton = "Registrar Ciudad";
+            Titulo = "Nuevo Ciudad";
+        }
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (await ciudadService.Guardar(ciudad))
+        {
+            ciudad = new RegistroTecnico.Models.Ciudad();
+        }
+
+        navigationManager.NavigateTo("/Ciudad/CiudadIndex");
+    }
+}

@@ -1,4 +1,4 @@
-﻿@page "/ClientesIndex/Clientes"
+﻿@page "/Clientes/ClientesIndex"
 @using RegistroTecnico.Models
 @using RegistroTecnico.Services
 @inject ClienteServices clienteService
@@ -9,10 +9,14 @@
 
 <div class="container">
     <div class="card shadow-lg">
-        <div class="card-header space-between">
+        <div class="card-header space-between d-flex justify-content-between align-items-center">
             <h5 class="card-title">Registro de Clientes</h5>
-            <a href="/ClientesIndex/CrearCliente" class="btn btn-primary">
-                <span class="bi bi-plus-square mt-3"></span> Crear
+            <input type="text" class="form-control w-25"
+                   placeholder="Buscar por nombre..."
+                   @bind="filtroBusqueda"
+                   @oninput="ActualizarFiltroBusqueda" />
+            <a href="/Clientes/CreateCliente" class="btn btn-primary">
+                <span class="bi bi-plus-square"></span> Crear
             </a>
         </div>
 
@@ -25,14 +29,14 @@
                         <th>Dirección</th>
                         <th>RNC</th>
                         <th>Fecha de Ingreso</th>
-                        <th>Técnico Asignado</th> <!-- Cambié el encabezado -->
+                        <th>Técnico Asignado</th>
                         <th>Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (ListaClientes.Any())
+                    @if (ClientesFiltrados.Any())
                     {
-                        @foreach (var cliente in ListaClientes)
+                        @foreach (var cliente in ClientesFiltrados)
                         {
                             <tr>
                                 <td>@cliente.ClienteID</td>
@@ -40,15 +44,10 @@
                                 <td>@cliente.Direccion</td>
                                 <td>@cliente.Rnc</td>
                                 <td>@cliente.FechaIngreso.ToShortDateString()</td>
-                                <td>@ObtenerNombreTecnico(cliente.TecnicoID)</td> <!-- Cambiado aquí -->
+                                <td>@ObtenerNombreTecnico(cliente.TecnicoID)</td>
                                 <td class="text-center">
-                                    <!-- Botón Editar -->
-                                    <a href="/EditarClientes/@cliente.ClienteID" class="btn btn-outline-primary bi bi-pencil-square">
-                                    </a>
-
-                                    <!-- Botón Eliminar -->
-                                    <a href="/EliminarCliente/@cliente.ClienteID" class="btn btn-outline-danger bi bi-trash">
-                                    </a>
+                                    <a href="/EditClientes/@cliente.ClienteID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="/DeleteCliente/@cliente.ClienteID" class="btn btn-outline-danger bi bi-trash"></a>
                                 </td>
                             </tr>
                         }
@@ -56,7 +55,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="7" class="text-center">No hay clientes registrados.</td>
+                            <td colspan="7" class="text-center">No hay clientes registrados o no coinciden con la búsqueda.</td>
                         </tr>
                     }
                 </tbody>
@@ -64,28 +63,41 @@
         </div>
 
         <div class="card-footer">
-            <label>Total Clientes: @ListaClientes.Count()</label>
+            <label>Total Clientes: @ClientesFiltrados.Count()</label>
         </div>
     </div>
 </div>
 
 @code {
-    public List<RegistroTecnico.Models.Clientes> ListaClientes { get; set; } = new List<RegistroTecnico.Models.Clientes>();
-    public Dictionary<int, string> TecnicosDiccionario { get; set; } = new Dictionary<int, string>();
+    private string filtroBusqueda { get; set; } = "";
+    private List<RegistroTecnico.Models.Clientes> ListaClientes { get; set; } = new List<RegistroTecnico.Models.Clientes>();
+    private Dictionary<int, string> TecnicosDiccionario { get; set; } = new Dictionary<int, string>();
+
+    private List<RegistroTecnico.Models.Clientes> ClientesFiltrados { get; set; } = new List<RegistroTecnico.Models.Clientes>();
 
     protected override async Task OnInitializedAsync()
     {
-        // Cargar la lista de clientes
         ListaClientes = await clienteService.Listar(c => true);
-
-        // Cargar la lista de técnicos y mapear sus nombres con sus IDs
         var listaTecnicos = await tecnicoService.Listar(t => true);
         TecnicosDiccionario = listaTecnicos.ToDictionary(t => t.TecnicoID, t => t.Nombre);
+
+        // Inicializa la lista filtrada con todos los clientes
+        ClientesFiltrados = new List<RegistroTecnico.Models.Clientes>(ListaClientes);
+    }
+
+    private void ActualizarFiltroBusqueda(ChangeEventArgs e)
+    {
+        filtroBusqueda = e.Value?.ToString() ?? "";
+        ClientesFiltrados = ListaClientes
+            .Where(c => string.IsNullOrWhiteSpace(filtroBusqueda) ||
+                        c.Nombres.Contains(filtroBusqueda, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        StateHasChanged(); // Forzar actualización de la UI
     }
 
     private string ObtenerNombreTecnico(int tecnicoID)
     {
-        // Devuelve el nombre del técnico asociado al ID, o un texto por defecto si no existe
         return TecnicosDiccionario.TryGetValue(tecnicoID, out var nombreTecnico) ? nombreTecnico : "No Asignado";
     }
 }

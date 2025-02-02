@@ -1,18 +1,18 @@
-﻿@page "/TecnicosIndex/CrearTecnico"
+﻿@page "/Tecnicos/CreateTecnico"
 @inject TecnicoServices tecnicoService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
-
-<PageTitle>Editar Técnico</PageTitle>
+<PageTitle>Crear Técnico</PageTitle>
 
 <EditForm Model="@Tecnico" OnValidSubmit="@OnValidSubmit">
-    <DataAnnotationsValidator /><DataAnnotationsValidator />
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
-                <h5 class="card-title">Editar</h5>
+                <h5 class="card-title">Crear Técnico</h5>
             </div>
 
             <div class="card-body">
@@ -21,20 +21,28 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>Nombre</strong></label>
                     <InputText class="form-control" @bind-Value="@Tecnico.Nombre" />
-                    <ValidationMessage For="@(() =>Tecnico.Nombre)" />
+                    <ValidationMessage For="@(() => Tecnico.Nombre)" />
                 </div>
 
-                <DataAnnotationsValidator />
                 @* Sueldo por Hora *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Sueldo por Hora</strong></label>
                     <InputNumber class="form-control" @bind-Value="@Tecnico.SueldoHora" />
+                    <ValidationMessage For="@(() => Tecnico.SueldoHora)" />
                 </div>
+
+                @* Mostrar error si ocurre *@
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-2">
+                        <strong>Error:</strong> @ErrorMessage
+                    </div>
+                }
             </div>
 
             @* Footer *@
             <div class="card-footer text-center mt-2">
-                <a href="/TecnicosIndex/Tecnicos" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <a href="/Tecnicos/TecnicosIndex" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
                 <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
             </div>
         </div>
@@ -44,22 +52,32 @@
 @code {
     [Parameter]
     public int TecnicoID { get; set; }
+
     public RegistroTecnico.Models.Tecnicos Tecnico = new RegistroTecnico.Models.Tecnicos();
-    
+    public string ErrorMessage { get; set; } = string.Empty;
 
     public void Nuevo()
     {
         Tecnico = new RegistroTecnico.Models.Tecnicos();
+        ErrorMessage = string.Empty;
     }
 
-    private async void OnValidSubmit()
+    private async Task OnValidSubmit()
     {
-        if (await tecnicoService.Guardar(Tecnico))
+        try
         {
-            Nuevo();
+            // Intentar guardar el técnico
+            if (await tecnicoService.Guardar(Tecnico))
+            {
+                Nuevo(); // Limpia el formulario después de guardar
+                navigationManager.NavigateTo("/Tecnicos/TecnicosIndex");
+            }
         }
-
-        navigationManager.NavigateTo("/TecnicosIndex/Tecnicos");
+        catch (InvalidOperationException ex)
+        {
+            // Capturar errores y asignar mensaje de error
+            ErrorMessage = ex.Message;
+        }
     }
-
 }
+
