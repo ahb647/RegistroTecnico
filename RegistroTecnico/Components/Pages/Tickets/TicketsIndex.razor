@@ -54,8 +54,8 @@
                                 <td>@(ticket.Tecnico != null ? ticket.Tecnico.Nombre : "Ticket sin Técnico")</td>
                                 <td>@ticket.TiempoInvertido hrs</td>
                                 <td class="text-center">
-                                    <a href="EditarTicket/@ticket.TicketID" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                                     <a href="/EliminarTicket/@ticket.TicketID" class="btn btn-outline-danger bi bi-trash"></a>
+                                    <a href="EditTicket/@ticket.TicketID" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                     <a href="/DeleteTicket/@ticket.TicketID" class="btn btn-outline-danger bi bi-trash"></a>
                                 </td>
                             </tr>
                         }
