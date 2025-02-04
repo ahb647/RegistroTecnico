@@ -42,7 +42,7 @@
 
             @* Footer *@
             <div class="card-footer text-center mt-2">
-                <a href="/Tecnicos/TecnicosIndex" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <a href="/Tecnicos/IndexTecnicos" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
                 <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
             </div>
         </div>
@@ -70,7 +70,7 @@
             if (await tecnicoService.Guardar(Tecnico))
             {
                 Nuevo(); // Limpia el formulario después de guardar
-                navigationManager.NavigateTo("/Tecnicos/TecnicosIndex");
+                navigationManager.NavigateTo("/Tecnicos/IndexTecnicos");
             }
         }
         catch (InvalidOperationException ex)

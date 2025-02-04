@@ -41,7 +41,7 @@
                 <div class="card-footer d-flex justify-content-center">
                     <div class="btn-group">
                         <button class="btn btn-outline-danger">Eliminar</button>
-                        <a href="/Tecnicos/TecnicosIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                        <a href="/Tecnicos/IndexTecnicos" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                     </div>
                 </div>
 
@@ -75,6 +75,6 @@
             await tecnicoService.Eliminar(TecnicoID);
         }
 
-        navigationManager.NavigateTo("/Tecnicos/TecnicosIndex");
+        navigationManager.NavigateTo("/Tecnicos/IndexTecnicos");
     }
 }
