@@ -18,6 +18,7 @@ namespace RegistroTecnico.Context
 
         public DbSet<Tickets> Tickets { get; set; }
 
+        public DbSet<Sistema> Sistema { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
