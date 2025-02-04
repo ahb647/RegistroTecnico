@@ -1,0 +1,89 @@
+﻿@page "/Sistemas/CreateSistema"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject SistemasServices sistemasService
+@inject NavigationManager navigationManager
+
+@rendermode InteractiveServer
+
+<PageTitle>Crear Sistema</PageTitle>
+
+<EditForm Model="@sistema" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Nuevo Sistema</h5>
+            </div>
+
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ErrorMessage
+                    </div>
+                }
+
+                @* Descripción del Sistema *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Descripción</strong></label>
+                    <InputText class="form-control" @bind-Value="@sistema.Descripcion" />
+                    <ValidationMessage For="@(() => sistema.Descripcion)" />
+                </div>
+
+                @* Complejidad del Sistema *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Complejidad (0-100)</strong></label>
+                    <InputNumber class="form-control" @bind-Value="@sistema.Complejidad" />
+                    <ValidationMessage For="@(() => sistema.Complejidad)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center mt-2">
+                <a href="/Sistemas/SistemasIndex" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Sistemas sistema { get; set; } = new Sistemas();
+    public List<Sistemas> ListaSistemas { get; set; } = new List<Sistemas>();
+
+    public string ErrorMessage { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaSistemas = await sistemasService.Listar(s => true); // Obtener la lista de sistemas disponibles
+    }
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            // Intenta guardar el sistema
+            if (await sistemasService.Guardar(sistema))
+            {
+                // Después de guardar el sistema, limpiar el formulario
+                sistema = new Sistemas();
+                ErrorMessage = string.Empty; // Limpiar cualquier mensaje de error previo
+
+                navigationManager.NavigateTo("/Sistemas/IndexSistemas");
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Captura la excepción si ocurre un duplicado
+            ErrorMessage = ex.Message;
+        }
+        catch (Exception)
+        {
+            // Captura cualquier otro error
+            ErrorMessage = "Ocurrió un error inesperado. Por favor, intenta nuevamente.";
+        }
+    }
+}

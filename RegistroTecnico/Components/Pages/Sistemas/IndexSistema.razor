@@ -1,0 +1,67 @@
+﻿@page "/Sistemas/IndexSistemas"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject SistemasServices sistemasService
+@inject NavigationManager navigationManager
+
+<PageTitle>Registro de Sistemas</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Registro de Sistemas</h5>
+            <a href="Sistemas/CreateSistema" class="btn btn-primary">
+                <span class="bi bi-plus-square mt-3"></span> Crear
+            </a>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table table-striped text-black">
+                    <tr>
+                        <th>ID</th>
+                        <th>Descripción</th>
+                        <th>Complejidad</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ListaSistemas.Any())
+                    {
+                        @foreach (var sistema in ListaSistemas)
+                        {
+                            <tr>
+                                <td>@sistema.SistemaId</td>
+                                <td>@sistema.Descripcion</td>
+                                <td>@sistema.Complejidad</td>
+                                <td>
+                                    <a href="EditSistema/@sistema.SistemaId" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <a href="DeleteSistema/@sistema.SistemaId" class="btn btn-outline-danger bi bi-trash"></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No hay sistemas registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <label>Total Sistemas: @ListaSistemas.Count()</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Sistemas> ListaSistemas { get; set; } = new List<Sistemas>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar la lista de Sistemas
+        ListaSistemas = await sistemasService.Listar(s => true);
+    }
+}

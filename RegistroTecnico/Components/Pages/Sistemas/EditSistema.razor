@@ -1,0 +1,85 @@
+﻿@page "/Sistemas/EditSistema"
+@page "/EditSistema/{SistemaId:int}"
+@using RegistroTecnico.Models
+@using RegistroTecnico.Services
+@inject SistemasServices sistemasService
+@inject NavigationManager navigationManager
+
+@rendermode InteractiveServer
+
+<PageTitle>Editar Sistema</PageTitle>
+
+<EditForm Model="@sistema" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <a href="/Sistemas/SistemasIndex" class="btn btn-outline-primary">Inicio</a>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>@Titulo</h3>
+            </div>
+
+            <div class="card-body">
+                @* Descripción del Sistema *@
+                <label>Descripción</label>
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="@sistema.Descripcion" class="form-control" />
+                    <ValidationMessage For="@(() => sistema.Descripcion)" />
+                </div>
+
+                @* Complejidad del Sistema *@
+                <label>Complejidad (0 - 100)</label>
+                <div class="input-group mb-3">
+                    <InputNumber @bind-Value="@sistema.Complejidad" class="form-control" />
+                    <ValidationMessage For="@(() => sistema.Complejidad)" />
+                </div>
+
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success">@TextoBoton</button>
+                        <a href="/Sistemas/SistemasIndex" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public int SistemaId { get; set; }
+    public Sistemas sistema { get; set; } = new Sistemas();
+    public List<Sistemas> ListaSistemas { get; set; } = new List<Sistemas>();
+
+    string TextoBoton = string.Empty;
+    string Titulo = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaSistemas = await sistemasService.Listar(s => true); // Obtener la lista de sistemas
+
+        if (SistemaId != 0)
+        {
+            sistema = await sistemasService.Buscar(SistemaId);
+            TextoBoton = "Actualizar Sistema";
+            Titulo = "Editar Sistema";
+        }
+        else
+        {
+            TextoBoton = "Registrar Sistema";
+            Titulo = "Nuevo Sistema";
+        }
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (await sistemasService.Guardar(sistema))
+        {
+            sistema = new Sistemas();
+        }
+
+        navigationManager.NavigateTo("/Sistemas/IndexSistemas");
+    }
+}
