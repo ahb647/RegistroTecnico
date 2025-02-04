@@ -1,6 +1,6 @@
 global using Microsoft.EntityFrameworkCore;
 global using RegistroTecnico.Services;
-global using RegistroTecnico.Context;
+global using RegistroTecnico.Contexto;
 using Blazored.Toast;
 using RegistroTecnico.Components;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -29,6 +29,7 @@ builder.Services.AddScoped<TecnicoServices>();
 builder.Services.AddScoped<ClienteServices>();
 builder.Services.AddScoped<CiudadServices>();
 builder.Services.AddScoped<TicketsServices>();
+builder.Services.AddScoped<SistemasServices>();
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddBlazoredToast();
 
