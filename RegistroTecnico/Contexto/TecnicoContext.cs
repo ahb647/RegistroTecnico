@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RegistroTecnico.Models;
 
 
-namespace RegistroTecnico.Context
+namespace RegistroTecnico.Contexto
 {
     public class TecnicoContext : DbContext
     {
@@ -18,7 +18,7 @@ namespace RegistroTecnico.Context
 
         public DbSet<Tickets> Tickets { get; set; }
 
-        public DbSet<Sistema> Sistema { get; set; }
+        public DbSet<Sistemas> Sistemas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
