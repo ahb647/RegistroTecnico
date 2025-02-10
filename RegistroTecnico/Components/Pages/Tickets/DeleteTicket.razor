@@ -41,7 +41,7 @@
                 <div class="card-footer d-flex justify-content-center">
                     <div class="btn-group">
                         <button class="btn btn-outline-danger">Eliminar</button>
-                        <a href="/Tickets/TicketsIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                        <a href="/Tickets/IndexTickets" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                     </div>
                 </div>
 
@@ -72,6 +72,6 @@
             await ticketService.Eliminar(TicketID);  // Eliminar el ticket
         }
 
-        navigationManager.NavigateTo("/Tickets/TicketsIndex"); // Redirigir después de eliminar
+        navigationManager.NavigateTo("/Tickets/IndexTickets"); // Redirigir después de eliminar
     }
 }

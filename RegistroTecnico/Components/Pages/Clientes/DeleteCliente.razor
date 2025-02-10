@@ -41,7 +41,7 @@
                 <div class="card-footer d-flex justify-content-center">
                     <div class="btn-group">
                         <button class="btn btn-outline-danger">Eliminar</button>
-                        <a href="/ClientesIndex/Clientes" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
+                        <a href="/Clientes/IndexClientes" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                     </div>
                 </div>
 
@@ -71,6 +71,6 @@
             await clienteService.Eliminar(ClienteID);
         }
 
-        navigationManager.NavigateTo("/Clientes/ClientesIndex");
+        navigationManager.NavigateTo("/Clientes/IndexClientes");
     }
 }
